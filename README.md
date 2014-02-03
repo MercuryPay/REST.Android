@@ -57,14 +57,11 @@ try {
 
 		rd.close();	
 	}
-	else {
-		response = "Error: " + conn.getResponseCode() + " " + conn.getResponseMessage();
-	}
 
 	conn.disconnect();
 }
 catch (Exception e) {
-	response = "Exception: " + e.getMessage();
+	e.printStackTrace();
 }
 ```
 
