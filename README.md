@@ -29,12 +29,12 @@ map.put("EncryptedKey","9500030000040C200026");
 Process the transaction with JSON.
 
 ```Java
-
 String line;
 String response = "";
 		
 try {
-	URL url = new URL(targetURL);
+	String jsonString = new JSONObject(map).toString();
+	URL url = new URL("https://w1.mercurycert.net/PaymentsAPI/Credit/Sale");
 	HttpsURLConnection conn = (HttpsURLConnection)url.openConnection();
 	conn.setRequestMethod("POST");
 	conn.setRequestProperty("Authorization", auth);
@@ -52,8 +52,8 @@ try {
 		BufferedReader rd = new BufferedReader(new InputStreamReader(conn.getInputStream()));
 
 		while ((line = rd.readLine()) != null) {
-		response += line;
-				}
+			response += line;
+		}
 
 		rd.close();	
 	}
@@ -61,13 +61,10 @@ try {
 		response = "Error: " + conn.getResponseCode() + " " + conn.getResponseMessage();
 	}
 
-		conn.disconnect();
+	conn.disconnect();
 }
-	catch (Exception e) {
-		response = "Exception: " + e.getMessage();
-	}
-		
-	return response;
+catch (Exception e) {
+	response = "Exception: " + e.getMessage();
 }
 ```
 
@@ -76,24 +73,18 @@ try {
 Approved transactions will have a CmdStatus equal to "Approved".
 
 ```Java
-String message = "";
-
 try {
-	JSONObject jsonObject = new JSONObject(jsonResponse);
-	Iterator keys = jsonObject.keys();
-
-	if (respMap.containsKey ("CmdStatus") && respMap.get("CmdStatus").equals("Approved")) 
-	{
+	JSONObject jsonObject = new JSONObject(response);
+			
+	if (jsonObject.has("CmdStatus") && jsonObject.getString("CmdStatus").equals("Approved")) {
 		// Approved logic here
 	} 
-	else 
-	{
+	else {
 		// Declined logic here
 	}
 }
 catch (Exception e) {
 	e.printStackTrace();
-	}
 }
 ```
 
