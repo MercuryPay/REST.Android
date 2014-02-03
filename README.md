@@ -25,7 +25,7 @@ map.put("EncryptedKey","9500030000040C200026");
   
 ##Step 2: Process the Transaction
 
-Process the transaction with JSON.
+Process the transaction with JSON POST.
 
 ```Java
 String line;
