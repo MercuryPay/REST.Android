@@ -29,52 +29,45 @@ map.put("EncryptedKey","9500030000040C200026");
 Process the transaction with JSON.
 
 ```Java
+
 String line;
 String response = "";
-
-try
-{
+		
+try {
 	URL url = new URL(targetURL);
 	HttpsURLConnection conn = (HttpsURLConnection)url.openConnection();
-	conn.setRequestMethod(reqType.toString());
+	conn.setRequestMethod("POST");
 	conn.setRequestProperty("Authorization", auth);
-	conn.setRequestProperty("Accept", "application/json");
 	conn.setRequestProperty("Content-Type", "application/json");
-	conn.setRequestProperty("charset", "utf-8");
-	conn.setRequestProperty("Content-Length", Integer.toString(urlParameters.getBytes().length));
-	conn.setReadTimeout(10000);
-	conn.setConnectTimeout(15000);
+	conn.setRequestProperty("Content-Length", Integer.toString(jsonRequest.getBytes().length));
+	conn.setConnectTimeout(10000);
+	conn.setReadTimeout(30000);
 	conn.setDoInput(true);
+	conn.setDoOutput(true);
+	OutputStreamWriter writer = new OutputStreamWriter(conn.getOutputStream());
+	writer.write(jsonRequest);
+	writer.close();
 
-	if (reqType == RequestType.POST)
-	{
-		conn.setDoOutput(true);
-		OutputStreamWriter writer = new OutputStreamWriter(conn.getOutputStream());
-		writer.write(urlParameters);
-		writer.close();
-	}
-
-	if (conn.getResponseCode() == HttpURLConnection.HTTP_OK)
-	{
+	if (conn.getResponseCode() == HttpURLConnection.HTTP_OK) {
 		BufferedReader rd = new BufferedReader(new InputStreamReader(conn.getInputStream()));
 
-		while ((line = rd.readLine()) != null)
-		{
-			response += line;
-		}
-		
+		while ((line = rd.readLine()) != null) {
+		response += line;
+				}
+
 		rd.close();	
 	}
-	else		
-	{
+	else {
 		response = "Error: " + conn.getResponseCode() + " " + conn.getResponseMessage();
 	}
 
-	conn.disconnect();
+		conn.disconnect();
 }
-catch (Exception e)
-{
-	response = "Exception: " + e.getMessage();
+	catch (Exception e) {
+		response = "Exception: " + e.getMessage();
+	}
+		
+	return response;
 }
 ```
 
@@ -83,26 +76,24 @@ catch (Exception e)
 Approved transactions will have a CmdStatus equal to "Approved".
 
 ```Java
-private void processTxnResponse (String resp)
-{
-	try
-	{
-		ObjectMapper mapper = new ObjectMapper();
-		HashMap<String, String> respMap = (HashMap<String, String>)mapper.readValue(resp, new TypeReference<HashMap<String,String>>(){});
+String message = "";
 
-		if (respMap.containsKey ("CmdStatus") && respMap.get("CmdStatus").equals("Approved")) 
-		{
-			// Approved logic here
-		} 
-		else 
-		{
-			// Declined logic here
-		}
-	}
-	catch (Exception e) 
+try {
+	JSONObject jsonObject = new JSONObject(jsonResponse);
+	Iterator keys = jsonObject.keys();
+
+	if (respMap.containsKey ("CmdStatus") && respMap.get("CmdStatus").equals("Approved")) 
 	{
-		e.printStackTrace();
+		// Approved logic here
 	} 
+	else 
+	{
+		// Declined logic here
+	}
+}
+catch (Exception e) {
+	e.printStackTrace();
+	}
 }
 ```
 
