@@ -1,0 +1,112 @@
+REST.Android
+============
+
+MercuryPay sample project that will show you a 
+Credit Sale, Credit Return, PrePaid Sale, PrePaid Return. 
+
+Contact your Mercury Developer Integration Analyst for the transactions your POS environment must support. 
+
+##Step 1: Build Request with Key Value Pairs
+  
+Create a HashMap and add all the Key Value Pairs.
+  
+```Java
+Map<String, String> map = new HashMap<String, String>();
+map.put("InvoiceNo","2001");
+map.put("RefNo","2001");
+map.put("Memo","REST.android");
+map.put("Purchase","2.00");
+map.put("Frequency","OneTime");
+map.put("RecordNo","RecordNumberRequested");
+map.put("EncryptedFormat","MagneSafe");
+map.put("AccountSource","Swiped");
+map.put("EncryptedBlock","2F8248964608156B2B1745287B44CA90A349905F905514ABE3979D7957F13804705684B1C9D5641C");
+map.put("EncryptedKey","9500030000040C200026");
+```
+  
+##Step 2: Process the Transaction
+
+Process the transaction with JSON.
+
+```Java
+String line;
+String response = "";
+
+try
+{
+	URL url = new URL(targetURL);
+	HttpsURLConnection conn = (HttpsURLConnection)url.openConnection();
+	conn.setRequestMethod(reqType.toString());
+	conn.setRequestProperty("Authorization", auth);
+	conn.setRequestProperty("Accept", "application/json");
+	conn.setRequestProperty("Content-Type", "application/json");
+	conn.setRequestProperty("charset", "utf-8");
+	conn.setRequestProperty("Content-Length", Integer.toString(urlParameters.getBytes().length));
+	conn.setReadTimeout(10000);
+	conn.setConnectTimeout(15000);
+	conn.setDoInput(true);
+
+	if (reqType == RequestType.POST)
+	{
+		conn.setDoOutput(true);
+		OutputStreamWriter writer = new OutputStreamWriter(conn.getOutputStream());
+		writer.write(urlParameters);
+		writer.close();
+	}
+
+	if (conn.getResponseCode() == HttpURLConnection.HTTP_OK)
+	{
+		BufferedReader rd = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+
+		while ((line = rd.readLine()) != null)
+		{
+			response += line;
+		}
+		
+		rd.close();	
+	}
+	else		
+	{
+		response = "Error: " + conn.getResponseCode() + " " + conn.getResponseMessage();
+	}
+
+	conn.disconnect();
+}
+catch (Exception e)
+{
+	response = "Exception: " + e.getMessage();
+}
+```
+
+##Step 3: Parse the Response
+
+Approved transactions will have a CmdStatus equal to "Approved".
+
+```Java
+private void processTxnResponse (String resp)
+{
+	try
+	{
+		ObjectMapper mapper = new ObjectMapper();
+		HashMap<String, String> respMap = (HashMap<String, String>)mapper.readValue(resp, new TypeReference<HashMap<String,String>>(){});
+
+		if (respMap.containsKey ("CmdStatus") && respMap.get("CmdStatus").equals("Approved")) 
+		{
+			// Approved logic here
+		} 
+		else 
+		{
+			// Declined logic here
+		}
+	}
+	catch (Exception e) 
+	{
+		e.printStackTrace();
+	} 
+}
+```
+
+###© 2014 Mercury Payment Systems, LLC - all rights reserved.
+
+Disclaimer:
+This software and all specifications and documentation contained herein or provided to you hereunder (the "Software") are provided free of charge strictly on an "AS IS" basis. No representations or warranties are expressed or implied, including, but not limited to, warranties of suitability, quality, merchantability, or fitness for a particular purpose (irrespective of any course of dealing, custom or usage of trade), and all such warranties are expressly and specifically disclaimed. Mercury Payment Systems shall have no liability or responsibility to you nor any other person or entity with respect to any liability, loss, or damage, including lost profits whether foreseeable or not, or other obligation for any cause whatsoever, caused or alleged to be caused directly or indirectly by the Software. Use of the Software signifies agreement with this disclaimer notice.
