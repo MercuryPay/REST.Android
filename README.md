@@ -15,6 +15,7 @@ map.put("InvoiceNo","2001");
 map.put("RefNo","2001");
 map.put("Memo","REST.android");
 map.put("Purchase","2.00");
+map.put("LaneID", "02");
 map.put("Frequency","OneTime");
 map.put("RecordNo","RecordNumberRequested");
 map.put("EncryptedFormat","MagneSafe");
