@@ -37,6 +37,7 @@ public class MainActivity extends Activity {
 		map.put("RefNo","2001");
 		map.put("Memo","REST.android");
 		map.put("Purchase","2.00");
+		map.put("LaneID", "02");
 		map.put("Frequency","OneTime");
 		map.put("RecordNo","RecordNumberRequested");
 		map.put("EncryptedFormat","MagneSafe");
@@ -53,6 +54,7 @@ public class MainActivity extends Activity {
 		map.put("RefNo","2001");
 		map.put("Memo","REST.android");
 		map.put("Purchase","2.00");
+		map.put("LaneID", "02");
 		map.put("Frequency","OneTime");
 		map.put("RecordNo","RecordNumberRequested");
 		map.put("EncryptedFormat","MagneSafe");
