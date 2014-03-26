@@ -1,7 +1,7 @@
 REST.Android
 ============
 
-MercuryPay sample project that will show you how to process againsts PaymentsAPI.
+MercuryPay RESTful sample project that will show you how to process againsts PaymentsAPI.
 
 Contact your Mercury Developer Integration Analyst for the transactions your POS environment must support. 
 
